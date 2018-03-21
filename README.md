@@ -1,6 +1,6 @@
 # ScanComplete
 
-ScanComplete is a data-driven approach which takes an incomplete 3D scan of a scene as input and predicts a complete 3D model, along with per-voxel semantic labels. More information can be found in our [paper](https://arxiv.org/pdf/1712.10215.pdf).
+ScanComplete is a data-driven approach which takes an incomplete 3D scan of a scene as input and predicts a complete 3D model, along with per-voxel semantic labels. This work is based on our CVPR'18 paper, [ScanComplete: Large-Scale Scene Completion and Semantic Segmentation for 3D Scans](https://arxiv.org/pdf/1712.10215.pdf).
 
 [<img src="images/teaser_mesh.jpg">](https://arxiv.org/abs/1712.10215)
 
