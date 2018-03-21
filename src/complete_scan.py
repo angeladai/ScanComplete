@@ -177,12 +177,14 @@ def predict_from_model(logit_groups_geometry, logit_groups_semantics,
   return predictions_geometry_list, predictions_semantics_list
 
 
-def create_dfs_from_output(input_sdf, output_df):
+def create_dfs_from_output(input_sdf, output_df, target_scan):
   """Rescales model output to distance fields (in voxel units)."""
   input_sdf = (input_sdf[0, :, :, :, 0].astype(np.float32) + 1
               ) * 0.5 * constants.TRUNCATION
   if FLAGS.p_norm > 0:
-    output_df = (output_df[0, :, :, :, 0] + 1) * 0.5 * constants.TRUNCATION
+    factor = 0.5 if target_scan is not None else 1.0
+    output_df = factor * constants.TRUNCATION * (
+        output_df[0, :, :, :, 0] + 1)
   else:
     output_df = (output_df[0, :, :, :, 0] + 1) * 0.5 * (
         FLAGS.num_quant_levels - 1)
@@ -373,7 +375,7 @@ def main(_):
     output_prediction_semantics = output_prediction_semantics[0]
     # Make distances again.
     input_scan, output_prediction_scan = create_dfs_from_output(
-        input_scan, output_prediction_scan)
+        input_scan, output_prediction_scan, target_scan)
 
     outprefix = os.path.join(
         output_folder, 'level' + str(FLAGS.hierarchy_level) + '_' +
