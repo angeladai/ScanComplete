@@ -11,14 +11,14 @@ Training is implemented with [TensorFlow](https://www.tensorflow.org/). This cod
 
 ### Training:  
 * See `run_train.sh` for calling the training (will need to provide a path to the train data).
-* Trained models: [Coming Soon]()
+* Trained models: [models.zip](http://dovahkiin.stanford.edu/scancomplete-public/models.zip)
 * See `run_complete_scans_hierarchical.sh` for testing on partial scans (needs paths to test data and model).
 
 
 ## Citation:  
 If you find our work useful in your research, please consider citing:
 ```
-@inproceedings{dai2017scancomplete,
+@inproceedings{dai2018scancomplete,
   title={ScanComplete: Large-Scale Scene Completion and Semantic Segmentation for 3D Scans},
   author={Dai, Angela and Ritchie, Daniel and Bokeloh, Martin and Reed, Scott and Sturm, J{\"u}rgen and Nie{\ss}ner, Matthias},
   booktitle = {Proc. Computer Vision and Pattern Recognition (CVPR), IEEE},
