@@ -14,6 +14,15 @@ Training is implemented with [TensorFlow](https://www.tensorflow.org/). This cod
 * Trained models: [models.zip](http://dovahkiin.stanford.edu/scancomplete-public/models.zip)
 * See `run_complete_scans_hierarchical.sh` for testing on partial scans (needs paths to test data and model).
 
+### Data:
+* Test scenes as TF Records: 
+  - [vox5.zip](http://dovahkiin.stanford.edu/scancomplete-public/data/test/vox5.zip) (4G)
+  - [vox9.zip](http://dovahkiin.stanford.edu/scancomplete-public/data/test/vox9.zip) (620M)
+  - [vox19.zip](http://dovahkiin.stanford.edu/scancomplete-public/data/test/vox19.zip) (105M)
+* Train data as TF Records:
+  - [vox19_dim32.zip](http://dovahkiin.stanford.edu/scancomplete-public/data/train/vox19_dim32.zip) (12G) for training the 19cm hierarchy level
+  - [vox5-9-19_dim32.zip](http://dovahkiin.stanford.edu/scancomplete-public/data/train/vox5-9-19_dim32.zip) (240G) for training the 9cm and 5cm hierarchy levels. IMPORTANT: For training a hierarchy with more than just the finest level (e.g., 19-9-5 or 9-5 instead of just 5cm), the finer levels should be trained using the results from the trained model from the previous hierarchy level; i.e. this data will need to be edited.
+
 
 ## Citation:  
 If you find our work useful in your research, please consider citing:
