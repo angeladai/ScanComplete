@@ -24,9 +24,9 @@ flags.DEFINE_integer('p_norm', 1, 'p-norm loss (0 to disable).')
 flags.DEFINE_bool('predict_semantics', False,
                   'Also predict semantic labels per-voxel.')
 flags.DEFINE_integer('num_quant_levels', 256, 'Number of quantization bins.')
-flags.DEFINE_integer('stored_dim_block_hi', 64,
+flags.DEFINE_integer('stored_dim_block', 64,
                      'Stored data block x/z dim, high-resolution.')
-flags.DEFINE_integer('stored_height_block_hi', 64,
+flags.DEFINE_integer('stored_height_block', 64,
                      'Stored data block y dim, high-resolution.')
 flags.DEFINE_float('weight_semantic', 0.5, 'Weight for semantic loss.')
 
@@ -67,8 +67,8 @@ def _train():
          FLAGS.train_samples,
          FLAGS.dim_block,
          FLAGS.height_block,
-         FLAGS.stored_dim_block_hi,
-         FLAGS.stored_height_block_hi,
+         FLAGS.stored_dim_block,
+         FLAGS.stored_height_block,
          FLAGS.is_base_level,
          FLAGS.hierarchy_level,
          FLAGS.num_quant_levels,

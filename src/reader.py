@@ -17,8 +17,8 @@ def ReadSceneBlocksLevel(data_filepattern,
                          train_samples,
                          dim_block,
                          height_block,
-                         stored_dim_block_hi,
-                         stored_height_block_hi,
+                         stored_dim_block,
+                         stored_height_block,
                          is_base_level,
                          hierarchy_level,
                          num_quant_levels,
@@ -33,8 +33,8 @@ def ReadSceneBlocksLevel(data_filepattern,
     train_samples: Train on previous model predictions.
     dim_block: x/z dimension of train block.
     height_block: y dimension of train block.
-    stored_dim_block_hi: Stored data x/z dimension (high-resolution).
-    stored_height_block_hi: Stored data y dimension (high-resolution).
+    stored_dim_block: Stored data x/z dimension (high-resolution).
+    stored_height_block: Stored data y dimension (high-resolution).
     is_base_level: Whether there are no previous hierarchy levels.
     hierarchy_level: hierarchy level (1 is finest).
     num_quant_levels: Number of quantization bins (if used).
@@ -58,8 +58,8 @@ def ReadSceneBlocksLevel(data_filepattern,
       [batch_size, dim_target//2, height_target//2, dim_target//2], dtype
       tf.uint8.
   """
-  assert (stored_dim_block_hi >= dim_block and
-          stored_height_block_hi >= height_block)
+  assert (stored_dim_block >= dim_block and
+          stored_height_block >= height_block)
 
   read_target_lo = not is_base_level
   _, examples, samples_lo, samples_sem_lo = _ReadBlockExample(
@@ -69,20 +69,20 @@ def ReadSceneBlocksLevel(data_filepattern,
       is_base_level=is_base_level,
       shuffle=shuffle,
       num_epochs=num_epochs,
-      stored_dim_block_hi=stored_dim_block_hi,
-      stored_height_block_hi=stored_height_block_hi)
+      stored_dim_block=stored_dim_block,
+      stored_height_block=stored_height_block)
 
   # jitter height (must be even)
   jitter = (np.random.random_integers(
       low=0, high=_HEIGHT_JITTER[hierarchy_level - 1]) // 2) * 2
 
   # extract relevant portion of data block as per input/target dim
-  #key_input = _RESOLUTIONS[hierarchy_level - 1] + '_' + _INPUT_FEATURE
-  #key_target = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_FEATURE
-  #key_target_sem = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_SEM_FEATURE
-  key_input = 'input_sdf'
-  key_target = 'target_df'
-  key_target_sem = 'target_sem'
+  key_input = _RESOLUTIONS[hierarchy_level - 1] + '_' + _INPUT_FEATURE
+  key_target = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_FEATURE
+  key_target_sem = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_SEM_FEATURE
+  #key_input = 'input_sdf'
+  #key_target = 'target_df'
+  #key_target_sem = 'target_sem'
 
   input_sdf_blocks = examples[key_input]
   input_sdf_blocks = preprocessor.extract_block(
@@ -108,8 +108,6 @@ def ReadSceneBlocksLevel(data_filepattern,
     target_lo_blocks = preprocessor.preprocess_target_sdf(
         target_lo_blocks, num_quant_levels, constants.TRUNCATION, quantize)
 
-  stored_dim_block = stored_dim_block_hi >> (hierarchy_level - 1)
-  stored_height_block = stored_height_block_hi >> (hierarchy_level - 1)
   target_sem_blocks = tf.decode_raw(examples[key_target_sem], tf.uint8)
   target_sem_blocks = tf.reshape(
       target_sem_blocks,
@@ -167,8 +165,8 @@ def ReadSceneBlocksLevel(data_filepattern,
 
 
 def _ReadBlockExample(data_filepattern, train_samples, hierarchy_level,
-                      is_base_level, stored_dim_block_hi,
-                      stored_height_block_hi, shuffle, num_epochs):
+                      is_base_level, stored_dim_block,
+                      stored_height_block, shuffle, num_epochs):
   """Deserializes train data.
 
   Args:
@@ -176,8 +174,8 @@ def _ReadBlockExample(data_filepattern, train_samples, hierarchy_level,
     train_samples: Train on previous model predictions.
     hierarchy_level: hierarchy level (1 is finest).
     is_base_level: Whether there are no previous hierarchy levels.
-    stored_dim_block_hi: Stored data x/z dimension (high-resolution).
-    stored_height_block_hi: Stored data y dimension (high-resolution).
+    stored_dim_block: Stored data x/z dimension (high-resolution).
+    stored_height_block: Stored data y dimension (high-resolution).
     shuffle: Whether to shuffle.
     num_epochs: Number of data epochs.
   Returns:
@@ -201,9 +199,6 @@ def _ReadBlockExample(data_filepattern, train_samples, hierarchy_level,
   reader = tf.TFRecordReader()
   key, serialized_example = reader.read(filename_queue)
 
-  stored_dim_block = stored_dim_block_hi >> (hierarchy_level - 1)
-  stored_height_block = stored_height_block_hi >> (hierarchy_level - 1)
-
   samples_lo = None
   samples_sem_lo = None
   if train_samples and not is_base_level:
@@ -224,12 +219,12 @@ def _ReadBlockExample(data_filepattern, train_samples, hierarchy_level,
     serialized_example = example['data']
 
   # Parse sequence example.
-  #key_input = _RESOLUTIONS[hierarchy_level - 1] + '_' + _INPUT_FEATURE
-  #key_target = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_FEATURE
-  #key_target_sem = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_SEM_FEATURE
-  key_input = 'input_sdf'
-  key_target = 'target_df'
-  key_target_sem = 'target_sem'
+  key_input = _RESOLUTIONS[hierarchy_level - 1] + '_' + _INPUT_FEATURE
+  key_target = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_FEATURE
+  key_target_sem = _RESOLUTIONS[hierarchy_level - 1] + '_' + _TARGET_SEM_FEATURE
+  #key_input = 'input_sdf'
+  #key_target = 'target_df'
+  #key_target_sem = 'target_sem'
 
   sequence_features_spec = {
       key_input:
