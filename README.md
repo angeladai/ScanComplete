@@ -12,6 +12,7 @@ Training is implemented with [TensorFlow](https://www.tensorflow.org/). This cod
 ### Training:  
 * See `run_train.sh` for calling the training (will need to provide a path to the train data).
 * Trained models: [models.zip](http://dovahkiin.stanford.edu/scancomplete-public/models.zip)
+### Testing:
 * See `run_complete_scans_hierarchical.sh` for testing on partial scans (needs paths to test data and model).
 
 ### Data:
