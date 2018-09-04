@@ -11,6 +11,9 @@ import constants
 import model
 import util
 
+# Disable standard debug info of TensorFlow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 flags = tf.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('base_dir', '',
@@ -224,6 +227,8 @@ def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem,
     save_errors = np.zeros(shape=save_prediction.shape)
     save_errors[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = np.abs(
         output_df - target_df)
+  save_pred_sem = None
+  save_target_sem = None
   if FLAGS.predict_semantics:
     save_pred_sem = np.zeros(shape=save_prediction.shape, dtype=np.uint8)
     save_pred_sem[:, FLAGS.pad_test:
