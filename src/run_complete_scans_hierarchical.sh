@@ -5,23 +5,23 @@
 # Parameter section begins here. Edit to change number of test scenes, which model to use, output path.
 MAX_NUM_TEST_SCENES=1
 NUM_HIERARCHY_LEVELS=3
-BASE_OUTPUT_DIR=./vis
+BASE_OUTPUT_DIR=/home/github/ScanComplete/results
 
 # Fill in path to test scenes
-TEST_SCENES_PATH_3=''
-TEST_SCENES_PATH_2=''
-TEST_SCENES_PATH_1=''
+TEST_SCENES_PATH_3='/home/github/ScanComplete/data/vox19'
+TEST_SCENES_PATH_2='/home/github/ScanComplete/data/vox9'
+TEST_SCENES_PATH_1='/home/github/ScanComplete/data/vox5'
 
 # Fill in model to use here
 PREDICT_SEMANTICS=0
-HIERARCHY_LEVEL_3_MODEL=''
-HIERARCHY_LEVEL_2_MODEL=''
-HIERARCHY_LEVEL_1_MODEL=''
+HIERARCHY_LEVEL_3_MODEL='/home/github/ScanComplete/models/completion/hierarchy3of3/'
+HIERARCHY_LEVEL_2_MODEL='/home/github/ScanComplete/models/completion/hierarchy2of3/'
+HIERARCHY_LEVEL_1_MODEL='/home/github/ScanComplete/models/completion/hierarchy1of3/'
 
 # Specify output folders for each hierarchy level.
-OUTPUT_FOLDER_3=${BASE_OUTPUT_DIR}/vis_level3
-OUTPUT_FOLDER_2=${BASE_OUTPUT_DIR}/vis_level2
-OUTPUT_FOLDER_1=${BASE_OUTPUT_DIR}/vis_level1
+OUTPUT_FOLDER_3=${BASE_OUTPUT_DIR}/vis_level3/
+OUTPUT_FOLDER_2=${BASE_OUTPUT_DIR}/vis_level2/
+OUTPUT_FOLDER_1=${BASE_OUTPUT_DIR}/vis_level1/
 
 # End parameter section.
 
