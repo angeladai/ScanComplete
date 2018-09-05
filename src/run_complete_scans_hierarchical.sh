@@ -13,10 +13,10 @@ TEST_SCENES_PATH_2='/home/github/ScanComplete/data/vox9'
 TEST_SCENES_PATH_1='/home/github/ScanComplete/data/vox5'
 
 # Fill in model to use here
-PREDICT_SEMANTICS=0
-HIERARCHY_LEVEL_3_MODEL='/home/github/ScanComplete/models/completion/hierarchy3of3/'
-HIERARCHY_LEVEL_2_MODEL='/home/github/ScanComplete/models/completion/hierarchy2of3/'
-HIERARCHY_LEVEL_1_MODEL='/home/github/ScanComplete/models/completion/hierarchy1of3/'
+PREDICT_SEMANTICS=1
+HIERARCHY_LEVEL_3_MODEL='/home/github/ScanComplete/models/completion-segmentation/hierarchy3of3/'
+HIERARCHY_LEVEL_2_MODEL='/home/github/ScanComplete/models/completion-segmentation/hierarchy2of3/'
+HIERARCHY_LEVEL_1_MODEL='/home/github/ScanComplete/models/completion-segmentation/hierarchy1of3/'
 
 # Specify output folders for each hierarchy level.
 OUTPUT_FOLDER_3=${BASE_OUTPUT_DIR}/vis_level3/
