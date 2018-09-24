@@ -137,10 +137,8 @@ def save_iso_meshes(dfs, errs, semantics, filenames, isoval=1):
                                                        filenames[i], isoval)
   command += 'exit;'
 
-  tf.logging.info(
-      'matlab -nodisplay -nosplash -nodesktop -r "{0}"'.format(command))
-  # Execute matlab.
-  os.system('matlab -nodisplay -nosplash -nodesktop -r "{0}"'.format(command))
+  # Execute octave.
+  os.system('octave --silent --no-window-system --no-gui --eval "{0}"'.format(command))
   # Clean up .mat files.
   for i in range(len(mat_filenames)):
     os.system('rm -f {0}'.format(mat_filenames[i]))
