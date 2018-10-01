@@ -19,9 +19,7 @@ OUTPUT_FOLDER=${BASE_OUTPUT_DIR}/vis_level_single/
 
 # End parameter section.
 
-
 # Run hierarchy.
-
 IS_BASE_LEVEL=1
 HIERARCHY_LEVEL=1
 HEIGHT_INPUT=16
@@ -29,7 +27,7 @@ HEIGHT_INPUT=16
 # Go through all test scenes.
 count=1
 for scene in $TEST_SCENES_PATH/*__0__.tfrecords; do
-  echo "Processing hierarchy level 3, scene $count of $MAX_NUM_TEST_SCENES: $scene".
+  echo "Processing single precision model, scene $count of $MAX_NUM_TEST_SCENES: $scene".
   python complete_scan.py \
     --alsologtostderr \
     --base_dir="${USED_MODEL}" \
