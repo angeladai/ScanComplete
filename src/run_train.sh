@@ -4,8 +4,8 @@ GPU=0
 BATCH_SIZE=8
 BASE_DIR='./train'
 # Fill in training data filepattern here.
-DATA='data/vox19_dim32/train*.tfrecords'      # data for 19cm level
-#DATA='data/vox5-9-19_dim32/train_*.tfrecords' # data for 9cm and 5cm levels
+DATA='../data/vox19_dim32/train*.tfrecords'      # data for 19cm level
+#DATA='../data/vox5-9-19_dim32/train_*.tfrecords' # data for 9cm and 5cm levels
 NUMBER_OF_STEPS=100000
 
 # coarse level
@@ -38,7 +38,7 @@ VERSION=003
 #TRAIN_SAMPLES=1
 #VERSION=001
 
-PREDICT_SEMANTICS=0  # set to 1 to predict semantics
+PREDICT_SEMANTICS=1  # set to 1 to predict semantics
 WEIGHT_SEM=0.5
 
 python train.py \
