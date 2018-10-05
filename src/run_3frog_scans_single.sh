@@ -28,7 +28,7 @@ HEIGHT_INPUT=16
 count=1
 for scene in $TEST_SCENES_PATH/*.tfrecords; do
   echo "Processing single precision model, scene $count of $MAX_NUM_TEST_SCENES: $scene".
-  python complete_scan.py \
+  python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${USED_MODEL}" \
     --height_input="${HEIGHT_INPUT}" \

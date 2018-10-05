@@ -38,7 +38,7 @@ HEIGHT_INPUT=16
 count=1
 for scene in $TEST_SCENES_PATH_3/*.tfrecords; do
   echo "Processing hierarchy level 3, scene $count of $MAX_NUM_TEST_SCENES: $scene".
-  python complete_scan.py \
+  python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_3_MODEL}" \
     --height_input="${HEIGHT_INPUT}" \
@@ -64,7 +64,7 @@ HEIGHT_INPUT=32
 count=1
 for scene in $TEST_SCENES_PATH_2/*.tfrecords; do
   echo "Processing hierarchy level 2, scene $count of $MAX_NUM_TEST_SCENES: $scene".
-  python complete_scan.py \
+  python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_2_MODEL}" \
     --output_dir_prev="${OUTPUT_FOLDER_3}" \
@@ -91,7 +91,7 @@ HEIGHT_INPUT=64
 count=1
 for scene in $TEST_SCENES_PATH_1/*.tfrecords; do
   echo "Processing hierarchy level 1, scene $count of $MAX_NUM_TEST_SCENES: $scene".
-  python complete_scan.py \
+  python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_1_MODEL}" \
     --output_dir_prev="${OUTPUT_FOLDER_2}" \
