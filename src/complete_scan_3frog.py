@@ -89,6 +89,7 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
   # Input scan as sdf.
   input_scan = read_input_float_feature(feature_map, 'input_sdf', shape=None)
   (scene_dim_z, scene_dim_y, scene_dim_x) = input_scan.shape
+  print "Input shape dimensions: " + str(input_scan.shape)
   # Target scan as df.
   target_scan = None
   target_semantics = None
@@ -106,6 +107,9 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
   input_scan = input_scan[:scene_dim_z, padding:padding + scene_dim_y, :
                           scene_dim_x]
   input_scan = util.preprocess_sdf(input_scan, constants.TRUNCATION)
+
+  print "Input shape dimensions after correction: " + str(input_scan.shape)
+
   if target_scan is not None:
     target_scan = target_scan[:scene_dim_z, padding:padding + scene_dim_y, :
                               scene_dim_x]
