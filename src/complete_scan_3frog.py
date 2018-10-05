@@ -77,7 +77,6 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
     predict_semantics: whether semantics is predicted.
   Returns:
     input scan: input_scan as np array.
-    ground truth targets: target_scan/target_semantics as np arrays (if any).
     previous resolution predictions: prediction_scan_low_resolution /
                                      prediction_semantics_low_resolution as
                                      np arrays (if any).
@@ -90,15 +89,6 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
   input_scan = read_input_float_feature(feature_map, 'input_sdf', shape=None)
   (scene_dim_z, scene_dim_y, scene_dim_x) = input_scan.shape
   print "Input shape dimensions: " + str(input_scan.shape)
-  # Target scan as df.
-  target_scan = None
-  target_semantics = None
-  if 'target_df' in feature_map.feature:
-    target_scan = read_input_float_feature(
-        feature_map, 'target_df', [scene_dim_z, scene_dim_y, scene_dim_x])
-  if 'target_sem' in feature_map.feature:
-    target_semantics = read_input_bytes_feature(
-        feature_map, 'target_sem', [scene_dim_z, scene_dim_y, scene_dim_x])
   # Adjust dimensions for model (clamp height, make even for voxel groups).
   height_y = min(height, scene_dim_y - padding)
   scene_dim_x = (scene_dim_x // 2) * 2
@@ -110,22 +100,11 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
 
   print "Input shape dimensions after correction: " + str(input_scan.shape)
 
-  if target_scan is not None:
-    target_scan = target_scan[:scene_dim_z, padding:padding + scene_dim_y, :
-                              scene_dim_x]
-    target_scan = util.preprocess_df(target_scan, constants.TRUNCATION)
-  if target_semantics is not None:
-    target_semantics = target_semantics[:scene_dim_z, padding:
-                                        padding + scene_dim_y, :scene_dim_x]
-    target_semantics = util.preprocess_target_sem(target_semantics)
-
   # Default values for previous resolution inputs.
   prediction_scan_low_resolution = np.zeros(
       [scene_dim_z // 2, scene_dim_y // 2, scene_dim_x // 2, 2])
   prediction_semantics_low_resolution = np.zeros(
       [scene_dim_z // 2, scene_dim_y // 2, scene_dim_x // 2], dtype=np.uint8)
-  if target_semantics is None:
-    target_semantics = np.zeros([scene_dim_z, scene_dim_y, scene_dim_x])
 
   # Load previous level prediction.
   if not FLAGS.is_base_level:
@@ -158,8 +137,7 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
       prediction_semantics_low_resolution = prediction_semantics_low_resolution[
           offset_z:offset_z + scene_dim_z // 2, :scene_dim_y // 2, offset_x:
           offset_x + scene_dim_x // 2]
-  return (input_scan, target_scan, target_semantics,
-          prediction_scan_low_resolution, prediction_semantics_low_resolution)
+  return (input_scan, prediction_scan_low_resolution, prediction_semantics_low_resolution)
 
 
 def predict_from_model(logit_groups_geometry, logit_groups_semantics,
@@ -186,12 +164,12 @@ def predict_from_model(logit_groups_geometry, logit_groups_semantics,
   return predictions_geometry_list, predictions_semantics_list
 
 
-def create_dfs_from_output(input_sdf, output_df, target_scan):
+def create_dfs_from_output(input_sdf, output_df):
   """Rescales model output to distance fields (in voxel units)."""
   input_sdf = (input_sdf[0, :, :, :, 0].astype(np.float32) + 1
               ) * 0.5 * constants.TRUNCATION
   if FLAGS.p_norm > 0:
-    factor = 0.5 if target_scan is not None else 1.0
+    factor = 1.0
     output_df = factor * constants.TRUNCATION * (
         output_df[0, :, :, :, 0] + 1)
   else:
@@ -216,46 +194,31 @@ def export_prediction_to_example(filename, pred_geo, pred_sem):
     writer.write(example.SerializeToString())
 
 
-def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem,
-                              target_df, target_sem):
-  """Saves predicted df/sem + input (+ target, if any) to mesh visualization."""
+def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem):
+  """Saves predicted df/sem + input to mesh visualization."""
   # Add back (below floor) padding for vis (creates the surface on the bottom).
   (scene_dim_z, scene_dim_y, scene_dim_x) = input_sdf.shape
   save_input_sdf = constants.TRUNCATION * np.ones(
       [scene_dim_z, 2 * FLAGS.pad_test + scene_dim_y, scene_dim_x])
   save_prediction = np.copy(save_input_sdf)
-  save_target = None if target_df is None else np.copy(save_input_sdf)
   save_input_sdf[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = input_sdf
   save_prediction[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = output_df
+  # leave save_errors empty, since we have no target scenes
   save_errors = None
-  if target_df is not None:
-    save_target[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = target_df
-    # For error visualization as colors on mesh.
-    save_errors = np.zeros(shape=save_prediction.shape)
-    save_errors[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = np.abs(
-        output_df - target_df)
   save_pred_sem = None
-  save_target_sem = None
   if FLAGS.predict_semantics:
     save_pred_sem = np.zeros(shape=save_prediction.shape, dtype=np.uint8)
     save_pred_sem[:, FLAGS.pad_test:
                   FLAGS.pad_test + scene_dim_y, :] = output_sem
     save_pred_sem[np.greater(save_prediction, 1)] = 0
-    if target_sem is not None:
-      save_target_sem = np.zeros(shape=save_prediction.shape, dtype=np.uint8)
-      save_target_sem[:, FLAGS.pad_test:
-                      FLAGS.pad_test + scene_dim_y, :] = target_sem
 
   # Save as mesh.
+  # Removed all target meshes, because we do not have this
   util.save_iso_meshes(
-      [save_input_sdf, save_prediction, save_target],
-      [None, save_errors, save_errors], [None, save_pred_sem, save_target_sem],
-      [
-          outprefix + 'input.obj', outprefix + 'pred.obj',
-          outprefix + 'target.obj'
-      ],
+      [save_input_sdf, save_prediction],
+      [None, save_errors], [None, save_pred_sem],
+      [outprefix + 'input.obj', outprefix + 'pred.obj'],
       isoval=1)
-
 
 def create_model(scene_dim_x, scene_dim_y, scene_dim_z):
   """Init model graph for scene."""
@@ -306,7 +269,7 @@ def main(_):
     os.makedirs(output_folder)
 
   # First load the data to figure out sizes of things.
-  (input_scan, target_scan, target_semantics, prediction_scan_low_resolution,
+  (input_scan, prediction_scan_low_resolution,
    prediction_semantics_low_resolution) = read_inputs(
        FLAGS.input_scene, FLAGS.height_input, FLAGS.pad_test,
        FLAGS.num_quant_levels, FLAGS.p_norm, FLAGS.predict_semantics)
@@ -387,7 +350,7 @@ def main(_):
     output_prediction_semantics = output_prediction_semantics[0]
     # Make distances again.
     input_scan, output_prediction_scan = create_dfs_from_output(
-        input_scan, output_prediction_scan, target_scan)
+        input_scan, output_prediction_scan)
 
     outprefix = os.path.join(
         output_folder, 'level' + str(FLAGS.hierarchy_level) + '_' +
@@ -398,8 +361,7 @@ def main(_):
                                  output_prediction_semantics)
     # Save mesh visualization output.
     export_prediction_to_mesh(outprefix, input_scan, output_prediction_scan,
-                              output_prediction_semantics, target_scan,
-                              target_semantics)
+                              output_prediction_semantics)
 
 
 if __name__ == '__main__':
