@@ -3,7 +3,7 @@
 # Runs scan completion with hierarchical model over a set of scenes.
 
 # Parameter section begins here. Edit to change number of test scenes, which model to use, output path.
-MAX_NUM_TEST_SCENES=1
+MAX_NUM_TEST_SCENES=1000
 NUM_HIERARCHY_LEVELS=3
 BASE_OUTPUT_DIR=/home/github/ScanComplete/results_3frog
 
@@ -47,7 +47,7 @@ HIERARCHY_LEVEL=1
 # Go through all test scenes.
 count=1
 REC_COUNTER=0
-for scene in $TEST_SCENES_PATH/*.tfrecords; do
+for scene in $TEST_SCENES_PATH_3/*.tfrecords; do
   ((REC_COUNTER++))
 done
 TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
@@ -78,7 +78,7 @@ HIERARCHY_LEVEL=2
 # go thru all test scenes
 count=1
 REC_COUNTER=0
-for scene in $TEST_SCENES_PATH/*.tfrecords; do
+for scene in $TEST_SCENES_PATH_2/*.tfrecords; do
   ((REC_COUNTER++))
 done
 TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
@@ -110,7 +110,7 @@ HIERARCHY_LEVEL=3
 # go thru all test scenes
 count=1
 REC_COUNTER=0
-for scene in $TEST_SCENES_PATH/*.tfrecords; do
+for scene in $TEST_SCENES_PATH_1/*.tfrecords; do
   ((REC_COUNTER++))
 done
 TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
