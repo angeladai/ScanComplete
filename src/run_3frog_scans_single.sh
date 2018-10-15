@@ -19,14 +19,14 @@ OUTPUT_FOLDER=${BASE_OUTPUT_DIR}/vis_level_single/
 
 # Specify padding
 # For now we consider a small 3 pixel padding in the voxel grid for 3frog
-PADDING=3
+PADDING_SINGLE_LEVEL=2
+HEIGHT_SINGLE_LEVEL=32
 
 # End parameter section.
 
 # Run hierarchy.
 IS_BASE_LEVEL=1
 HIERARCHY_LEVEL=1
-HEIGHT_INPUT=16
 
 # Go through all test scenes.
 count=1
@@ -40,14 +40,14 @@ for scene in $TEST_SCENES_PATH/*.tfrecords; do
   python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${USED_MODEL}" \
-    --height_input="${HEIGHT_INPUT}" \
+    --height_input="${HEIGHT_SINGLE_LEVEL}" \
     --hierarchy_level="${HIERARCHY_LEVEL}" \
     --num_total_hierarchy_levels="${NUM_HIERARCHY_LEVELS}" \
     --is_base_level="${IS_BASE_LEVEL}" \
     --predict_semantics="${PREDICT_SEMANTICS}" \
     --output_folder="${OUTPUT_FOLDER}" \
     --input_scene="${scene}" \
-    --pad_test="${PADDING}"
+    --pad_test="${PADDING_SINGLE_LEVEL}"
   ((count++))
   if (( count > MAX_NUM_TEST_SCENES )); then
     break
