@@ -17,6 +17,10 @@ USED_MODEL='/home/github/ScanComplete/models/completion-semantics/hierarchy1of1/
 # Specify output folder
 OUTPUT_FOLDER=${BASE_OUTPUT_DIR}/vis_level_single/
 
+# Specify padding
+# For now we consider a small 3 pixel padding in the voxel grid for 3frog
+PADDING=3
+
 # End parameter section.
 
 # Run hierarchy.
@@ -37,7 +41,8 @@ for scene in $TEST_SCENES_PATH/*.tfrecords; do
     --is_base_level="${IS_BASE_LEVEL}" \
     --predict_semantics="${PREDICT_SEMANTICS}" \
     --output_folder="${OUTPUT_FOLDER}" \
-    --input_scene="${scene}"
+    --input_scene="${scene}" \
+    --pad_test="${PADDING}"
   ((count++))
   if (( count > MAX_NUM_TEST_SCENES )); then
     break

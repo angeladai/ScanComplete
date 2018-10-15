@@ -23,6 +23,10 @@ OUTPUT_FOLDER_3=${BASE_OUTPUT_DIR}/vis_level3/
 OUTPUT_FOLDER_2=${BASE_OUTPUT_DIR}/vis_level2/
 OUTPUT_FOLDER_1=${BASE_OUTPUT_DIR}/vis_level1/
 
+# Specify padding
+# For now we consider a small 3 pixel padding in the voxel grid for 3frog
+PADDING=3
+
 # End parameter section.
 
 
@@ -47,7 +51,8 @@ for scene in $TEST_SCENES_PATH_3/*.tfrecords; do
     --is_base_level="${IS_BASE_LEVEL}" \
     --predict_semantics="${PREDICT_SEMANTICS}" \
     --output_folder="${OUTPUT_FOLDER_3}" \
-    --input_scene="${scene}"
+    --input_scene="${scene}" \
+    --pad_test="${PADDING}"
   ((count++))
   if (( count > MAX_NUM_TEST_SCENES )); then
     break
@@ -74,7 +79,8 @@ for scene in $TEST_SCENES_PATH_2/*.tfrecords; do
     --is_base_level="${IS_BASE_LEVEL}" \
     --predict_semantics="${PREDICT_SEMANTICS}" \
     --output_folder="${OUTPUT_FOLDER_2}" \
-    --input_scene="${scene}"
+    --input_scene="${scene}" \
+    --pad_test="${PADDING}"
   ((count++))
   if (( count > MAX_NUM_TEST_SCENES )); then
     break
@@ -101,7 +107,8 @@ for scene in $TEST_SCENES_PATH_1/*.tfrecords; do
     --is_base_level="${IS_BASE_LEVEL}" \
     --predict_semantics="${PREDICT_SEMANTICS}" \
     --output_folder="${OUTPUT_FOLDER_1}" \
-    --input_scene="${scene}"
+    --input_scene="${scene}" \
+    --pad_test="${PADDING}"
   ((count++))
   if (( count > MAX_NUM_TEST_SCENES )); then
     break
