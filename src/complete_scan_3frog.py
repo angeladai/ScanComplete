@@ -1,6 +1,6 @@
 """Applies model to a single test scene and exports results.
 
-(Note: uses matlab to convert predicted complete dfs to meshes.)
+(Note: uses octave to convert predicted complete dfs to meshes.)
 """
 
 import os
