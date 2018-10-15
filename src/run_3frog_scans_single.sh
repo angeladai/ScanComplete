@@ -3,7 +3,7 @@
 # Runs scan completion with hierarchical model over a set of scenes.
 
 # Parameter section begins here. Edit to change number of test scenes, which model to use, output path.
-MAX_NUM_TEST_SCENES=1
+MAX_NUM_TEST_SCENES=1000
 NUM_HIERARCHY_LEVELS=1
 BASE_OUTPUT_DIR=/home/github/ScanComplete/results_3frog
 
@@ -30,8 +30,13 @@ HEIGHT_INPUT=16
 
 # Go through all test scenes.
 count=1
+REC_COUNTER=0
 for scene in $TEST_SCENES_PATH/*.tfrecords; do
-  echo "Processing single precision model, scene $count of $MAX_NUM_TEST_SCENES: $scene".
+  ((REC_COUNTER++))
+done
+TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
+for scene in $TEST_SCENES_PATH/*.tfrecords; do
+  echo "Processing single precision model, scene $count of $TOTAL_SCENES: $scene".
   python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${USED_MODEL}" \

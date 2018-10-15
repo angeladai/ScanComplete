@@ -29,7 +29,6 @@ PADDING=3
 
 # End parameter section.
 
-
 # Run hierarchy.
 
 # ------- hierarchy level 1 ------- #
@@ -40,8 +39,13 @@ HEIGHT_INPUT=16
 
 # Go through all test scenes.
 count=1
+REC_COUNTER=0
+for scene in $TEST_SCENES_PATH/*.tfrecords; do
+  ((REC_COUNTER++))
+done
+TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
 for scene in $TEST_SCENES_PATH_3/*.tfrecords; do
-  echo "Processing hierarchy level 3, scene $count of $MAX_NUM_TEST_SCENES: $scene".
+  echo "Processing hierarchy level 3, scene $count of $TOTAL_SCENES: $scene".
   python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_3_MODEL}" \
@@ -67,8 +71,13 @@ HEIGHT_INPUT=32
 
 # go thru all test scenes
 count=1
+REC_COUNTER=0
+for scene in $TEST_SCENES_PATH/*.tfrecords; do
+  ((REC_COUNTER++))
+done
+TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
 for scene in $TEST_SCENES_PATH_2/*.tfrecords; do
-  echo "Processing hierarchy level 2, scene $count of $MAX_NUM_TEST_SCENES: $scene".
+  echo "Processing hierarchy level 2, scene $count of $TOTAL_SCENES: $scene".
   python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_2_MODEL}" \
@@ -95,8 +104,13 @@ HEIGHT_INPUT=64
 
 # go thru all test scenes
 count=1
+REC_COUNTER=0
+for scene in $TEST_SCENES_PATH/*.tfrecords; do
+  ((REC_COUNTER++))
+done
+TOTAL_SCENES=$(($REC_COUNTER<$MAX_NUM_TEST_SCENES?$REC_COUNTER:$MAX_NUM_TEST_SCENES))
 for scene in $TEST_SCENES_PATH_1/*.tfrecords; do
-  echo "Processing hierarchy level 1, scene $count of $MAX_NUM_TEST_SCENES: $scene".
+  echo "Processing hierarchy level 1, scene $count of $TOTAL_SCENES: $scene".
   python complete_scan_3frog.py \
     --alsologtostderr \
     --base_dir="${HIERARCHY_LEVEL_1_MODEL}" \
