@@ -11,6 +11,9 @@ import constants
 import model
 import util
 
+# Disable standard debug info of TensorFlow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 flags = tf.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('base_dir', '',
@@ -87,6 +90,8 @@ def read_inputs(filename, height, padding, num_quant_levels, p_norm,
   input_scan = read_input_float_feature(feature_map, 'input_sdf', shape=None)
   (scene_dim_z, scene_dim_y, scene_dim_x) = input_scan.shape
   # Target scan as df.
+  target_scan = None
+  target_semantics = None
   if 'target_df' in feature_map.feature:
     target_scan = read_input_float_feature(
         feature_map, 'target_df', [scene_dim_z, scene_dim_y, scene_dim_x])
@@ -218,12 +223,15 @@ def export_prediction_to_mesh(outprefix, input_sdf, output_df, output_sem,
   save_target = None if target_df is None else np.copy(save_input_sdf)
   save_input_sdf[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = input_sdf
   save_prediction[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = output_df
+  save_errors = None
   if target_df is not None:
     save_target[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = target_df
     # For error visualization as colors on mesh.
     save_errors = np.zeros(shape=save_prediction.shape)
     save_errors[:, FLAGS.pad_test:FLAGS.pad_test + scene_dim_y, :] = np.abs(
         output_df - target_df)
+  save_pred_sem = None
+  save_target_sem = None
   if FLAGS.predict_semantics:
     save_pred_sem = np.zeros(shape=save_prediction.shape, dtype=np.uint8)
     save_pred_sem[:, FLAGS.pad_test:

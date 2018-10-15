@@ -9,6 +9,8 @@ import model
 import preprocessor
 import reader
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 flags = tf.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_integer('gpu', 3, 'GPU to run on')
